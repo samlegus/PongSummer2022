@@ -4,62 +4,53 @@ using UnityEngine;
 
 public class Ball : MonoBehaviour
 {
+    public float currentSpeed;
     public float speed = 5.25f;
     public Rigidbody2D rb;
 
     void Start()
     {
+        currentSpeed = speed;
         rb = GetComponent<Rigidbody2D>();
-        rb.velocity = Vector2.left * speed;
+        rb.velocity = Vector2.left * currentSpeed;
+        
     }
 
     float HitFactor(Vector2 ballPos, Vector2 racketPos, float racketHeight)
     {
-        // ascii art:
-        // ||  1 <- at the top of the racket
-        // ||
-        // ||  0 <- at the middle of the racket
-        // ||
-        // || -1 <- at the bottom of the racket
         return (ballPos.y - racketPos.y) / racketHeight;
     }
 
     void OnCollisionEnter2D(Collision2D col)
     {
-        // Note: 'col' holds the collision information. If the
-        // Ball collided with a racket, then:
-        //   col.gameObject is the racket
-        //   col.transform.position is the racket's position
-        //   col.collider is the racket's collider
-
-        // Hit the left Racket?
         if (col.gameObject.name == "PlayerOne")
         {
-            // Calculate hit Factor
-            float y = HitFactor(transform.position,
-                                col.transform.position,
-                                col.collider.bounds.size.y);
-
-            // Calculate direction, make length=1 via .normalized
+            float y = HitFactor(transform.position, col.transform.position, col.collider.bounds.size.y);
             Vector2 dir = new Vector2(1, y).normalized;
-
-            // Set Velocity with dir * speed
-            GetComponent<Rigidbody2D>().velocity = dir * speed;
+            rb.velocity = dir * currentSpeed;
+            currentSpeed = currentSpeed + 1;
         }
 
-        // Hit the right Racket?
         if (col.gameObject.name == "PlayerTwo")
         {
-            // Calculate hit Factor
-            float y = HitFactor(transform.position,
-                                col.transform.position,
-                                col.collider.bounds.size.y);
-
-            // Calculate direction, make length=1 via .normalized
+            float y = HitFactor(transform.position, col.transform.position, col.collider.bounds.size.y);
             Vector2 dir = new Vector2(-1, y).normalized;
+            rb.velocity = dir * currentSpeed;
+            currentSpeed = currentSpeed + 1;
+        }
 
-            // Set Velocity with dir * speed
-            GetComponent<Rigidbody2D>().velocity = dir * speed;
+        if(col.gameObject.name == "GoalLeft")
+        {
+            transform.position = Vector2.zero;
+            GameManager.score02 += 1;
+            rb.velocity = Vector2.right * speed;
+        }
+
+        if(col.gameObject.name == "GoalRight")
+        {
+            transform.position = Vector2.zero;
+            GameManager.score01 += 1;
+            rb.velocity = Vector2.left * speed;
         }
     }
 }

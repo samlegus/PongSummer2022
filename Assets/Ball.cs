@@ -7,13 +7,14 @@ public class Ball : MonoBehaviour
     public float currentSpeed;
     public float speed = 5.25f;
     public Rigidbody2D rb;
+    public TrailRenderer tr;
 
     void Start()
     {
         currentSpeed = speed;
         rb = GetComponent<Rigidbody2D>();
+        tr = GetComponent<TrailRenderer>();
         rb.velocity = Vector2.left * currentSpeed;
-        
     }
 
     float HitFactor(Vector2 ballPos, Vector2 racketPos, float racketHeight)
@@ -44,6 +45,7 @@ public class Ball : MonoBehaviour
             transform.position = Vector2.zero;
             GameManager.score02 += 1;
             rb.velocity = Vector2.right * speed;
+            tr.Clear();
         }
 
         if(col.gameObject.name == "GoalRight")
@@ -51,6 +53,7 @@ public class Ball : MonoBehaviour
             transform.position = Vector2.zero;
             GameManager.score01 += 1;
             rb.velocity = Vector2.left * speed;
+            tr.Clear();
         }
     }
 }

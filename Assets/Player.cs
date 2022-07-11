@@ -6,7 +6,7 @@ public class Player : MonoBehaviour
 {
     public KeyCode upKey = KeyCode.W;
     public KeyCode downKey = KeyCode.S;
-    public float speed = 2.5f;
+    public float speed = .25f;
 
     void FixedUpdate()
     {
